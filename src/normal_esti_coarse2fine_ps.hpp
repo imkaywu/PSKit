@@ -14,6 +14,7 @@
 #include <vector>
 #include <ctime>
 #include <limits>
+#include <iomanip>
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -23,7 +24,9 @@
 using std::cout;
 using std::endl;
 using std::cerr;
+using std::flush;
 using std::vector;
+using std::_Bitwise_hash;
 
 using Eigen::Matrix;
 using Eigen::Array;
@@ -44,7 +47,7 @@ void ind2sub(Vector2i &imsize, int &ind, int &i, int &j);
 void sub2ind(Vector2i &imsize, int &i, int &j, int &ind);
 int find_index(VectorXi &array, int key);
 int find_index(VectorXi &array, int start, int end, int key);
-void write_text(const char * fname, MatrixXd &fdata);
+void write_text(const char * fname, double* fdata, const int num);
 template <typename T>
 T read_text(const char * fname);
 void read_text(const char *fname, vector<Vector2i> &size_ref, vector<Vector2d, Eigen::aligned_allocator<Vector2d> > &center, vector<double> &radius, Vector2i &size_tar);
@@ -62,6 +65,21 @@ inline vector<size_t> sort_indexes(const vector<T> &v)
          [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
     
     return idx;
+}
+
+static inline void loadbar(unsigned int x, unsigned int n, unsigned int w = 50)
+{
+	if ((x != n) && (x % (n / 100 + 1) != 0))
+		return;
+	float ratio = x / (float)n;
+	int c = ratio * w;
+
+	cout << std::setw(3) << (int)(ratio * 100) << "% [";
+	for (int i = 0; i < c; ++i)
+		cout << "=";
+	for (int i = c; i < w; ++i)
+		cout << " ";
+	cout << "]\r" << flush;
 }
 
 // not used code

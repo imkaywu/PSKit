@@ -107,7 +107,8 @@ if use_mex
     size_ref(:, 1) = size(mask_ref{1})';
     size_ref(:, 2) = size(mask_ref{2})';
     centers = [center{1}', center{2}'];
-    n_map_tar = normal_esti_coarse2fine_ps(OV_tar, OV_ref{1}, OV_ref{2}, uint32(OV_tar_ind), uint32(OV_ref_ind{1}), uint32(OV_ref_ind{2}), uint32(size_tar), uint32(size_ref), centers, radius');
+    radius = radius - 0.4;
+    n_map_tar = normal_esti_coarse2fine_ps(OV_tar', OV_ref{1}', OV_ref{2}', uint32(OV_tar_ind), uint32(OV_ref_ind{1}), uint32(OV_ref_ind{2}), uint32(size_tar), uint32(size_ref), centers, radius');
 else
 % write data to text files
 if(~exist([data.dir, 'data/'], 'dir'))

@@ -20,13 +20,12 @@ double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_i
     Vector3d view_dir;
     view_dir << 0, 0, 1;
     
-    //MatrixXd norm_map(3, OV_tar.rows());
 	double *norm_map;
 	norm_map = new double[3 * OV_tar.rows()];
     
     vector<MatrixXd> normal_samp(N);
     
-    string dir = "C:/Users/Admin/Documents/3D Recon/Data/WACV/obj1_9_25/";
+    //string dir = "C:/Users/Admin/Documents/3D Recon/Data/WACV/obj1_9_25/";
     for (int i = 0; i < N; ++i)
     {
         normal_samp[i] = gen_normals(num_samp[i], view_dir, 180);
@@ -35,7 +34,7 @@ double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_i
     for (int i = 0; i < static_cast<int>(OV_tar.rows()); ++i)
     {
         // start of processing
-        clock_t start_t = clock();
+        //clock_t start_t = clock();
         
         VectorXd ov_tar = OV_tar.row(i);
         
@@ -133,7 +132,6 @@ double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_i
         Vector3d norm_opt = c[err_ind[0]];
         //cout << "estimated normal: " << norm_opt << endl;
         norm_opt(0) = -norm_opt(0);
-        //norm_map.col(i) = norm_opt;
 		norm_map[3 * i + 0] = norm_opt(0);
 		norm_map[3 * i + 1] = norm_opt(1);
 		norm_map[3 * i + 2] = norm_opt(2);
@@ -164,9 +162,9 @@ double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_i
         //cout.precision(std::numeric_limits< double >::max_digits10);
         //cout << "Time elapsed: " << (double)(clock() - start_t) / CLOCKS_PER_SEC << endl;
         //waitKey(100);
-		cout << "Time elapsed: " << (double)(clock() - start_t) / CLOCKS_PER_SEC << endl;
+		//cout << "Time elapsed: " << (double)(clock() - start_t) / CLOCKS_PER_SEC << endl;
+		loadbar(i, static_cast<unsigned int>(OV_tar.rows()));
     }
-	//write_text("norm_map.txt", norm_map);
     return norm_map;
 }
 
@@ -311,17 +309,16 @@ void read_text(const char *fname, vector<Vector2i> &size_ref, vector<Vector2d, E
 	}
 }
 
-void write_text(const char * fname, MatrixXd &fdata)
+void write_text(const char *fname, double *fdata, const int num)
 {
 	std::fstream myfile(fname, std::ios_base::out);
 
-	int n = static_cast<int>(fdata.cols());
-	myfile << n << endl;
+	myfile << num << endl;
 
 	int col = 0;
-	while (col < n)
+	while (col < num)
 	{
-		myfile << fdata(0, col) << " " << fdata(1, col) << " " << fdata(2, col) << endl;
+		myfile << fdata[3 * col + 0] << " " << fdata[3 * col + 1] << " " << fdata[3 * col + 2] << endl;
 		col++;
 	}
 }

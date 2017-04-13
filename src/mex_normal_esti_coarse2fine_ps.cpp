@@ -43,10 +43,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     r = mxGetM(prhs[3]);
     c = mxGetN(prhs[3]);
     VectorXi ov_tar_ind = Map<VectorXi>(pov_tar_ind, r, c);
-    for (int i = 0; i < 100; ++i)
-    	mexPrintf("%d\n", pov_tar_ind[i]);
-    // for (int i = 0; i < 100; ++i)
-    // 	mexPrintf("ind: %d\n", ov_tar_ind(i));
     
     vector<VectorXi> ov_ref_ind(2);
     int *pov_ref_spec_ind = (int *)mxGetData(prhs[4]);
@@ -95,9 +91,10 @@ void mexFunction(int nlhs, mxArray *plhs[],
     // mexPrintf("radius 1: %.1f\n", radius[0]);
     // mexPrintf("radius 2: %.1f\n", radius[1]);
 
-    plhs[0] = mxCreateDoubleMatrix(3, mxGetN(prhs[0]), mxREAL);
-    double* norm_map = mxGetPr(plhs[0]);
-	// norm_map = esti_norm(ov_tar, ov_ref, ov_tar_ind, ov_ref_ind, size_tar, size_ref, center, radius);
+    mwSize nrows = mxGetM(prhs[0]);
+    plhs[0] = mxCreateDoubleMatrix(nrows, 3, mxREAL);
+    double* norm_map = mxGetPr(plhs[0]); // might have a memory issue!
+	norm_map = esti_norm(ov_tar, ov_ref, ov_tar_ind, ov_ref_ind, size_tar, size_ref, center, radius);
 	
 	// delete [] norm_map;
 }
