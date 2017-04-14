@@ -6,7 +6,8 @@ mask_tar_ind = find(mask_tar);
 mask_reso = numel(mask_tar);
 img_tar = imread(data.name_img_tar{1});
 
-normals = read_normals([data.dir, 'data/norm_map.txt']);
+% normals = read_normals([data.dir, 'data/norm_map.txt']);
+normals = n_map_tar;
 
 norm_map = zeros(size(mask_tar, 1), size(mask_tar, 2), 3);
 norm_map(mask_tar_ind + mask_reso * 0) = normals(1, :);

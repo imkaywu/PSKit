@@ -41,7 +41,7 @@ using Eigen::VectorXd;
 
 using namespace cv;
 
-double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind, vector<VectorXi> &OV_ref_ind, Vector2i &size_tar, vector<Vector2i> &size_ref, vector<Vector2d, Eigen::aligned_allocator<Vector2d> > &center, vector<double> &radius);
+void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind, vector<VectorXi> &OV_ref_ind, Vector2i &size_tar, vector<Vector2i> &size_ref, vector<Vector2d, Eigen::aligned_allocator<Vector2d> > &center, vector<double> &radius, double* norm_map);
 MatrixXd gen_normals(int num_samp, Vector3d &view_dir, double ang_span);
 void ind2sub(Vector2i &imsize, int &ind, int &i, int &j);
 void sub2ind(Vector2i &imsize, int &i, int &j, int &ind);

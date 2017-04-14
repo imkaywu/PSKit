@@ -22,10 +22,14 @@ using Eigen::Map;
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
+	if (nrhs != 10)
+	{
+		mexErrMsgIdAndTxt("MyToolbox:esti_norm:nrhs","Ten inputs required.");
+	}
+
     double *pov_tar = mxGetPr(prhs[0]);
     int r = mxGetM(prhs[0]);
     int c = mxGetN(prhs[0]);
-    // mexPrintf("r: %d, c: %d\n", r, c);
     MatrixXd ov_tar = Map<MatrixXd>(pov_tar, r, c);
     
     vector<MatrixXd> ov_ref(2);
@@ -42,24 +46,23 @@ void mexFunction(int nlhs, mxArray *plhs[],
     int *pov_tar_ind = (int *)mxGetData(prhs[3]);
     r = mxGetM(prhs[3]);
     c = mxGetN(prhs[3]);
-    VectorXi ov_tar_ind = Map<VectorXi>(pov_tar_ind, r, c);
+    VectorXi ov_tar_ind = Map<VectorXi>(pov_tar_ind, r);
     
     vector<VectorXi> ov_ref_ind(2);
     int *pov_ref_spec_ind = (int *)mxGetData(prhs[4]);
     r = mxGetM(prhs[4]);
     c = mxGetN(prhs[4]);
-    ov_ref_ind[0] = Map<VectorXi>(pov_ref_spec_ind, r, c); // ov_ref_spec_ind
+    ov_ref_ind[0] = Map<VectorXi>(pov_ref_spec_ind, r); // ov_ref_spec_ind
 
     int *pov_ref_diff_ind = (int *)mxGetData(prhs[5]);
     r = mxGetM(prhs[5]);
     c = mxGetN(prhs[5]);
-    ov_ref_ind[1] = Map<VectorXi>(pov_ref_diff_ind, r, c); // ov_ref_diff_ind
+    ov_ref_ind[1] = Map<VectorXi>(pov_ref_diff_ind, r); // ov_ref_diff_ind
     
     int *psize_tar = (int *)mxGetData(prhs[6]);
     r = mxGetM(prhs[6]);
     c = mxGetN(prhs[6]);
     Vector2i size_tar = Map<Vector2i>(psize_tar);
-    // mexPrintf("size_tar: %d, %d\n", size_tar(0), size_tar(1));
     
     vector<Vector2i> size_ref(2);
     int *psize_ref = (int *)mxGetData(prhs[7]);
@@ -68,8 +71,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     Matrix2i size_ref_mat = Map<Matrix2i>(psize_ref, r, c);
     size_ref[0] = size_ref_mat.col(0);
     size_ref[1] = size_ref_mat.col(1);
-    // mexPrintf("size_ref 1: %d, %d\n", size_ref[0](0), size_ref[0](1));
-    // mexPrintf("size_ref 2: %d, %d\n", size_ref[1](0), size_ref[1](1));
     
     vector<Vector2d, Eigen::aligned_allocator<Vector2d> > center(2);
     double *pcenter = mxGetPr(prhs[8]);
@@ -78,8 +79,6 @@ void mexFunction(int nlhs, mxArray *plhs[],
     Matrix2d center_mat = Map<Matrix2d>(pcenter, r, c);
     center[0] = center_mat.col(0);
     center[1] = center_mat.col(1);
-    // mexPrintf("center 1: %.1f, %.1f\n", center[0](0), center[0](1));
-    // mexPrintf("center 2: %.1f, %.1f\n", center[1](0), center[1](1));
 
     vector<double> radius(2);
     double *pradius = mxGetPr(prhs[9]);
@@ -88,13 +87,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     Vector2d radius_mat = Map<Vector2d>(pradius, r, c);
     radius[0] = radius_mat(0);
     radius[1] = radius_mat(1);
-    // mexPrintf("radius 1: %.1f\n", radius[0]);
-    // mexPrintf("radius 2: %.1f\n", radius[1]);
 
     mwSize nrows = mxGetM(prhs[0]);
-    plhs[0] = mxCreateDoubleMatrix(nrows, 3, mxREAL);
-    double* norm_map = mxGetPr(plhs[0]); // might have a memory issue!
-	norm_map = esti_norm(ov_tar, ov_ref, ov_tar_ind, ov_ref_ind, size_tar, size_ref, center, radius);
-	
-	// delete [] norm_map;
+    plhs[0] = mxCreateDoubleMatrix(3, nrows, mxREAL);
+    double* norm_map = mxGetPr(plhs[0]);
+	esti_norm(ov_tar, ov_ref, ov_tar_ind, ov_ref_ind, size_tar, size_ref, center, radius, norm_map);
 }

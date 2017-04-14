@@ -70,14 +70,13 @@ str = textscan(fid, '%s', data.num_ref + 1);
 data.name_mask_ref{1} = [data.dir, str{1}{1}];
 data.name_mask_ref{2} = [data.dir, str{1}{2}];
 data.name_mask_tar = [data.dir, str{1}{3}];
-
 fclose(fid);
 
 % normal estimation
 exmp_based_ps_varying_brdf;
 % exmp_based_ps;
-n_map_tar{data.num_view} = n_map_tar;
+% n_map_tar{data.num_view} = n_map_tar;
 
 % surface estimation
-esti_surf; % assign n_map_tar to normals
+esti_surf;
 

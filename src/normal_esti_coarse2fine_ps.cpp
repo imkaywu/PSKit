@@ -9,7 +9,7 @@
 #include "normal_esti_coarse2fine_ps.hpp"
 
 // OV_tar_ind is not used
-double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind, vector<VectorXi> &OV_ref_ind, Vector2i &size_tar, vector<Vector2i> &size_ref, vector<Vector2d, Eigen::aligned_allocator<Vector2d> > &center, vector<double> &radius)
+void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind, vector<VectorXi> &OV_ref_ind, Vector2i &size_tar, vector<Vector2i> &size_ref, vector<Vector2d, Eigen::aligned_allocator<Vector2d> > &center, vector<double> &radius, double* norm_map)
 {
     const int N = 5; // level of sampling
     const int M = 3; // choose the best M centers
@@ -19,9 +19,6 @@ double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_i
     double btwn_ang_last_iter[N] = {180, 10, 5, 3, 1}; // , 0.5
     Vector3d view_dir;
     view_dir << 0, 0, 1;
-    
-	double *norm_map;
-	norm_map = new double[3 * OV_tar.rows()];
     
     vector<MatrixXd> normal_samp(N);
     
@@ -33,9 +30,7 @@ double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_i
     
     for (int i = 0; i < static_cast<int>(OV_tar.rows()); ++i)
     {
-        // start of processing
-        //clock_t start_t = clock();
-        
+        // start of processing        
         VectorXd ov_tar = OV_tar.row(i);
         
         vector<Vector3d> c(1);
@@ -165,7 +160,6 @@ double* esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_i
 		//cout << "Time elapsed: " << (double)(clock() - start_t) / CLOCKS_PER_SEC << endl;
 		loadbar(i, static_cast<unsigned int>(OV_tar.rows()));
     }
-    return norm_map;
 }
 
 MatrixXd gen_normals(int num_samp, Vector3d &view_dir, double ang_span)
