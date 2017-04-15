@@ -15,20 +15,25 @@ mask_ref{2}(mask_ref{2} > 0) = 1;
 % [center{2}, radius(2), ~] = imfindcircles(mask_ref{2}, range_radius);
 
 % for my own dataset
-fid = fopen([data.dir, 'data/mask.txt'], 'r');
-% diffuse reference
-str = textscan(fid, '%s', 1);
-num = textscan(fid, '%d %d', 2); 
-center{1} = double([num{1}(2), num{2}(2)]);
-num = textscan(fid, '%f', 1);
-radius(1) = num{1};
-% specular reference
-str = textscan(fid, '%s', 1);
-num = textscan(fid, '%d %d', 2); 
-center{2} = double([num{1}(2), num{2}(2)]);
-num = textscan(fid, '%f', 1);
-radius(2) = num{1};
-fclose(fid);
+% fid = fopen([data.dir, 'data/mask.txt'], 'r');
+% % diffuse reference
+% str = textscan(fid, '%s', 1);
+% num = textscan(fid, '%d %d', 2); 
+% center{1} = double([num{1}(2), num{2}(2)]);
+% num = textscan(fid, '%f', 1);
+% radius(1) = num{1};
+% % specular reference
+% str = textscan(fid, '%s', 1);
+% num = textscan(fid, '%d %d', 2); 
+% center{2} = double([num{1}(2), num{2}(2)]);
+% num = textscan(fid, '%f', 1);
+% radius(2) = num{1};
+% fclose(fid);
+
+center{1} = [640.5029  360.5024];
+center{2} = [640.5029  360.5024];
+radius(1) = 120.9189;
+radius(2) = 120.9189;
 
 img_tar = zeros(size(mask_tar, 1), size(mask_tar, 2), 3 * data.num_img, 'uint8');
 img_ref{1} = zeros(size(mask_ref{1}, 1), size(mask_ref{1}, 2), 3 * data.num_img, 'uint8');

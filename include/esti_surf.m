@@ -36,4 +36,4 @@ h_tar_map = integrate_horn2(n_x, n_y, double(mask_tar), 50000, 1);
 % h_tar_map = frankotchellappa(n_x, n_y);
 
 % write to .ply file
-write_ply([data.dir, 'point cloud.ply'], h_tar_map, img_tar, mask_tar);
+write_ply([data.dir, '/point cloud.ply'], h_tar_map, img_tar, mask_tar);
