@@ -22,12 +22,10 @@ show_surfNorm(img_tar, norm_map, 10);
 normals_rgb = n_map_tar;
 normals_rgb(1 : 2, :) = (normals_rgb(1 : 2, :) + 1.0) * 255.0 / 2.0;
 normals_rgb(3, :) = normals_rgb(3, :) * 255.0;
-norm_map_rgb = zeros(size(mask_tar, 1), size(mask_tar, 2), 3, 'uint8');
 norm_map_rgb(mask_tar_ind + mask_reso * 0) = normals_rgb(1, :);
 norm_map_rgb(mask_tar_ind + mask_reso * 1) = normals_rgb(2, :);
 norm_map_rgb(mask_tar_ind + mask_reso * 2) = normals_rgb(3, :);
-imwrite(norm_map_rgb, sprintf('%s/normal.jpg', data.dir));
-clear normals_rgb norm_map_rgb;
+imwrite(uint8(norm_map_rgb, sprintf('%s/normal.jpg', data.dir));
 
 % integrate the normal to get the surface
 DfG = 0; % depth from gradients

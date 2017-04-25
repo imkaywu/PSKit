@@ -30,7 +30,7 @@ mask_ref{2}(mask_ref{2} > 0) = 1;
 % radius(2) = num{1};
 % fclose(fid);
 
-% for the synthetic dataset
+
 center{1} = [640.5029  360.5024];
 center{2} = [640.5029  360.5024];
 radius(1) = 120.9189;

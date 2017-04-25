@@ -89,12 +89,10 @@ data.name_img_ref = cell(data.num_img, data.num_ref);
 data.name_img_tar = cell(data.num_img, 1);
 n_map_tar = cell(data.num_view, 1);
 
-dir_ref_img = 'C:/Users/Admin/Documents/3D Recon/Data/synthetic data/ref_obj';
-
 % get reference object name
 for i = 1 : data.num_ref
     for j = 1 : data.num_img
-        data.name_img_ref{j, i} = sprintf('%s/%04d/%04d.jpg', dir_ref_img, i-1, j-1);
+        data.name_img_ref{j, i} = sprintf('%s/%04d/%04d.jpg', data.ref_dir, i-1, j-1);
     end
 end
 
@@ -104,10 +102,9 @@ for i = 1 : data.num_img
 end
 
 % get mask
-data.name_mask_tar = 'C:/Users/Admin/Documents/3D Recon/Data/synthetic data/plane_sphere/mask.bmp';
-% data.name_mask_tar = sprintf('C:\Users\Admin\Documents\3D Recon\Data\synthetic data\plane_sphere');
-data.name_mask_ref{1} = sprintf('%s/mask/0000.bmp', dir_ref_img);
-data.name_mask_ref{2} = sprintf('%s/mask/0001.bmp', dir_ref_img);
+data.name_mask_tar = sprintf('%s/gt/mask.bmp', data.rdir);
+data.name_mask_ref{1} = sprintf('%s/mask/0000.bmp', data.ref_dir);
+data.name_mask_ref{2} = sprintf('%s/mask/0001.bmp', data.ref_dir);
 
 % normal estimation
 exmp_based_ps_varying_brdf;
