@@ -2,13 +2,12 @@
 close all;
 
 mask_tar = imread(data.name_mask_tar);
-mask_tar(mask_tar >= 128) = 1;
+mask_tar(mask_tar > 0) = 1;
 mask_tar_ind = find(mask_tar);
 mask_reso = numel(mask_tar);
 img_tar = imread(data.name_img_tar{1});
 
 % normals = read_normals([data.dir, 'data/norm_map.txt']);
-normals = n_map_tar;
 
 norm_map = zeros(size(mask_tar, 1), size(mask_tar, 2), 3);
 norm_map(mask_tar_ind + mask_reso * 0) = normals(1, :);
@@ -19,15 +18,17 @@ norm_map(mask_tar_ind + mask_reso * 2) = normals(3, :);
 show_surfNorm(img_tar, norm_map, 10);
 
 % write to normal map (color coded)
-normals_rgb = n_map_tar;
-normals_rgb(1 : 2, :) = (normals_rgb(1 : 2, :) + 1.0) * 255.0 / 2.0;
-normals_rgb(3, :) = normals_rgb(3, :) * 255.0;
-norm_map_rgb = zeros(size(mask_tar, 1), size(mask_tar, 2), 3, 'uint8');
-norm_map_rgb(mask_tar_ind + mask_reso * 0) = normals_rgb(1, :);
-norm_map_rgb(mask_tar_ind + mask_reso * 1) = normals_rgb(2, :);
-norm_map_rgb(mask_tar_ind + mask_reso * 2) = normals_rgb(3, :);
+norm_map_rgb = encode(norm_map, mask_tar);
+% normals_rgb = normals;
+% normasl_rgb(2, :) = -normals_rgb(2, :);
+% normals_rgb(1 : 2, :) = (normals_rgb(1 : 2, :) + 1.0) * 255.0 / 2.0;
+% normals_rgb(3, :) = normals_rgb(3, :) * 255.0;
+% norm_map_rgb = zeros(size(mask_tar, 1), size(mask_tar, 2), 3, 'uint8');
+% norm_map_rgb(mask_tar_ind + mask_reso * 0) = normals_rgb(1, :);
+% norm_map_rgb(mask_tar_ind + mask_reso * 1) = normals_rgb(2, :);
+% norm_map_rgb(mask_tar_ind + mask_reso * 2) = normals_rgb(3, :);
 imwrite(norm_map_rgb, sprintf('%s/normal.jpg', data.dir));
-clear normals_rgb norm_map_rgb;
+clear norm_map_rgb;
 
 % integrate the normal to get the surface
 DfG = 0; % depth from gradients

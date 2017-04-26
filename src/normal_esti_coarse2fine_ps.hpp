@@ -15,6 +15,7 @@
 #include <ctime>
 #include <limits>
 #include <iomanip>
+#include <cmath>
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"

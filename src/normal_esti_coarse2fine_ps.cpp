@@ -14,7 +14,7 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
     const int N = 5; // level of sampling
     const int M = 3; // choose the best M centers
     const int num_img = static_cast<int>(OV_tar.cols()) / 3;
-	const int num_ref = static_cast<int>(OV_ref.size());
+    const int num_ref = static_cast<int>(OV_ref.size());
     int num_samp[N] = {150, 500, 3000, 20000, 40000}; // , static_cast<int>(OV_ref_spec.rows())
     double btwn_ang_last_iter[N] = {180, 10, 5, 3, 1}; // , 0.5
     Vector3d view_dir;
@@ -63,28 +63,36 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
                     Vector2d normal = normals[cc].block(0, k, 2, 1);
                     normal(0) = -normal(0);
 
-					//Vector2d u;
-					vector<double> u(2);
-					MatrixXd ov_ref(ov_tar.rows(), num_ref);
-					int ind, x, y;
+                    //Vector2d u;
+                    vector<double> u(2);
+                    MatrixXd ov_ref(ov_tar.rows(), num_ref);
+                    int ind, x, y;
 
-					for (int nf = 0; nf < num_ref; ++nf)
-					{
-						//u = center[nf] + normal * radius[nf];
-						u[0] = center[nf](0) + normal(0) * radius[nf];
-						u[1] = center[nf](1) + normal(1) * radius[nf];
-						x = u[0] + 0.5;
-						y = u[1] + 0.5;// should check if it's in the mask, but how?
-						sub2ind(size_ref[nf], y, x, ind);
-						int ii = find_index(OV_ref_ind[nf], 0, OV_ref_ind[nf].rows() - 1, ind);
-						
-						if (ii == -1)
-							cout << "Error: Index not found" << endl;
-						if (OV_ref_ind[nf](ii) != ind)
-							cout << "Error: Index invalid" << endl;
+                    for (int nf = 0; nf < num_ref; ++nf)
+                    {
+                        //u = center[nf] + normal * radius[nf];
+                        u[0] = center[nf](0) + normal(0) * radius[nf];
+                        u[1] = center[nf](1) + normal(1) * radius[nf];
+                        x = floor(u[0] + 0.5);
+                        y = floor(u[1] + 0.5);
+                        // check if in the mask
+                        double d2c = sqrt(pow((double)x - center[nf](0), 2.0) + pow((double)y - center[nf](1), 2.0));
+                        // cout << "Inside of mask: " << d2c << endl;
+                        if (d2c > radius[nf])
+                        {
+                            // cout << "Outside of mask: " << d2c << endl;
+                            continue;
+                        }
+                        sub2ind(size_ref[nf], y, x, ind);
+                        int ii = find_index(OV_ref_ind[nf], 0, OV_ref_ind[nf].rows() - 1, ind);
+                        
+                        if (ii == -1)
+                            cout << "Error: Index " << ind << " not found" << endl;
+                        if (OV_ref_ind[nf](ii) != ind)
+                            cout << "Error: Index " << ind << " not consistent" << endl;
 
-						ov_ref.col(nf) = OV_ref[nf].row(ii).transpose();
-					}
+                        ov_ref.col(nf) = OV_ref[nf].row(ii).transpose();
+                    }
 
                     vector<double> err(3);
                     VectorXd m;
@@ -127,9 +135,9 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
         Vector3d norm_opt = c[err_ind[0]];
         //cout << "estimated normal: " << norm_opt << endl;
         norm_opt(0) = -norm_opt(0);
-		norm_map[3 * i + 0] = norm_opt(0);
-		norm_map[3 * i + 1] = norm_opt(1);
-		norm_map[3 * i + 2] = norm_opt(2);
+        norm_map[3 * i + 0] = norm_opt(0);
+        norm_map[3 * i + 1] = norm_opt(1);
+        norm_map[3 * i + 2] = norm_opt(2);
         
         //Mat img_tar, img_ref;
         //img_tar = imread(dir + "tar_11.png", CV_LOAD_IMAGE_COLOR);
@@ -157,8 +165,8 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
         //cout.precision(std::numeric_limits< double >::max_digits10);
         //cout << "Time elapsed: " << (double)(clock() - start_t) / CLOCKS_PER_SEC << endl;
         //waitKey(100);
-		//cout << "Time elapsed: " << (double)(clock() - start_t) / CLOCKS_PER_SEC << endl;
-		loadbar(i, static_cast<unsigned int>(OV_tar.rows()));
+        //cout << "Time elapsed: " << (double)(clock() - start_t) / CLOCKS_PER_SEC << endl;
+        loadbar(i, static_cast<unsigned int>(OV_tar.rows()));
     }
 }
 
@@ -208,17 +216,17 @@ void sub2ind(Vector2i &imsize, int &i, int &j, int &ind)
 
 int find_index(VectorXi &array, int start, int end, int key)
 {
-	if (start > end)
-		return -1;
+    if (start > end)
+        return -1;
 
-	int mid = start + (end - start) / 2;
-	if (array(mid) > key)
-		return find_index(array, start, mid - 1, key);
+    int mid = start + (end - start) / 2;
+    if (array(mid) > key)
+        return find_index(array, start, mid - 1, key);
 
-	if (array(mid) < key)
-		return find_index(array, mid + 1, end, key);
+    if (array(mid) < key)
+        return find_index(array, mid + 1, end, key);
 
-	return mid;
+    return mid;
 }
 
 int find_index(VectorXi &array, int key)
@@ -280,41 +288,41 @@ T read_text(const char *fname)
 
 void read_text(const char *fname, vector<Vector2i> &size_ref, vector<Vector2d, Eigen::aligned_allocator<Vector2d> > &center, vector<double> &radius, Vector2i &size_tar)
 {
-	std::fstream myfile(fname, std::ios_base::in);
-	string label;
+    std::fstream myfile(fname, std::ios_base::in);
+    string label;
 
-	while (!myfile.eof())
-	{
-		myfile >> label;
-		if (label.compare("diff") == 0)
-		{
-			myfile >> size_ref[0](0) >> size_ref[0](1);
-			myfile >> center[0](0) >> center[0](1);
-			myfile >> radius[0];
-		}
-		else if (label.compare("spec") == 0)
-		{
-			myfile >> size_ref[1](0) >> size_ref[1](1);
-			myfile >> center[1](0) >> center[1](1);
-			myfile >> radius[1];
-		}
-		else if(label.compare("tar") == 0)
-			myfile >> size_tar(0) >> size_tar(1);
-	}
+    while (!myfile.eof())
+    {
+        myfile >> label;
+        if (label.compare("diff") == 0)
+        {
+            myfile >> size_ref[0](0) >> size_ref[0](1);
+            myfile >> center[0](0) >> center[0](1);
+            myfile >> radius[0];
+        }
+        else if (label.compare("spec") == 0)
+        {
+            myfile >> size_ref[1](0) >> size_ref[1](1);
+            myfile >> center[1](0) >> center[1](1);
+            myfile >> radius[1];
+        }
+        else if(label.compare("tar") == 0)
+            myfile >> size_tar(0) >> size_tar(1);
+    }
 }
 
 void write_text(const char *fname, double *fdata, const int num)
 {
-	std::fstream myfile(fname, std::ios_base::out);
+    std::fstream myfile(fname, std::ios_base::out);
 
-	myfile << num << endl;
+    myfile << num << endl;
 
-	int col = 0;
-	while (col < num)
-	{
-		myfile << fdata[3 * col + 0] << " " << fdata[3 * col + 1] << " " << fdata[3 * col + 2] << endl;
-		col++;
-	}
+    int col = 0;
+    while (col < num)
+    {
+        myfile << fdata[3 * col + 0] << " " << fdata[3 * col + 1] << " " << fdata[3 * col + 2] << endl;
+        col++;
+    }
 }
 
 // unused code

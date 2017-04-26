@@ -2,7 +2,7 @@
 
 %% prepare data
 mask_tar = imread(data.name_mask_tar);
-mask_tar(mask_tar >= 128) = 1;
+mask_tar(mask_tar > 0) = 1;
 mask_ref{1} = imread(data.name_mask_ref{1});
 mask_ref{2} = imread(data.name_mask_ref{2});
 mask_ref{1}(mask_ref{1} > 0) = 1;
@@ -31,17 +31,19 @@ mask_ref{2}(mask_ref{2} > 0) = 1;
 % fclose(fid);
 
 % for the synthetic dataset
-center{1} = [640.5029  360.5024];
-center{2} = [640.5029  360.5024];
-radius(1) = 120.9189;
-radius(2) = 120.9189;
+clear center radius;
+[center{1}, radius(1)] = imfindcircles(mask_ref{1}, [175, 185], 'Sensitivity', 0.99); % 'EdgeThreshold', 0.1: doesn't have much of an effect
+[center{2}, radius(2)] = imfindcircles(mask_ref{2}, [175, 185], 'Sensitivity', 0.99);
+center{1} = floor(center{1});
+center{2} = floor(center{2});
+radius = floor(radius);
 
 img_tar = zeros(size(mask_tar, 1), size(mask_tar, 2), 3 * data.num_img, 'uint8');
 img_ref{1} = zeros(size(mask_ref{1}, 1), size(mask_ref{1}, 2), 3 * data.num_img, 'uint8');
 img_ref{2} = zeros(size(mask_ref{2}, 1), size(mask_ref{2}, 2), 3 * data.num_img, 'uint8');
 
 for v = 1 : data.num_view % probably need to modify
-n_map_tar{v} = zeros([size(mask_tar), 3]);
+% n_map_tar{v} = zeros([size(mask_tar), 3]);
     
 ind_img = randperm(data.num_img);
 for i = 1 : data.num_img % reshuffle the image
@@ -113,9 +115,11 @@ if use_mex
     size_ref(:, 1) = size(mask_ref{1})';
     size_ref(:, 2) = size(mask_ref{2})';
     centers = [center{1}', center{2}'];
-    radius = radius - 0.4;
-    n_map_tar = normal_esti_coarse2fine_ps(OV_tar', OV_ref{1}', OV_ref{2}', uint32(OV_tar_ind), uint32(OV_ref_ind{1}), uint32(OV_ref_ind{2}), uint32(size_tar), uint32(size_ref), centers, radius');
+%     radius = radius - 1.0; % why???
+    normals = normal_esti_coarse2fine_ps(OV_tar', OV_ref{1}', OV_ref{2}', uint32(OV_tar_ind), uint32(OV_ref_ind{1}), uint32(OV_ref_ind{2}), uint32(size_tar), uint32(size_ref), centers, radius');
 else
+write2file = 0;
+if write2file
 % write data to text files
 if(~exist([data.dir, 'data/'], 'dir'))
     mkdir([data.dir, 'data/']);
@@ -127,6 +131,7 @@ if(~exist([data.dir, 'data/ov_tar.txt'], 'file') || data.update)
     text_write([data.dir, 'data/ov_tar_ind.txt'], uint32(OV_tar_ind'));
     text_write([data.dir, 'data/ov_ref_ind_1.txt'], uint32(OV_ref_ind{1}'));
     text_write([data.dir, 'data/ov_ref_ind_2.txt'], uint32(OV_ref_ind{2}'));
+end
 end
 % the code below is only for debugging purpose
 for i = 600 : numel(OV_tar_ind)
@@ -160,8 +165,24 @@ for i = 600 : numel(OV_tar_ind)
                 normal = normals{cc}(1 : 2, k); normal(1) = -normal(1);
                 u{1} = center{1}' + normal * radius(1); %[x, y]
                 ind(1) = sub2ind(size(mask_ref{1}), floor(u{1}(2)+0.5), floor(u{1}(1)+0.5)); % round to the closest lower integer
+                x = floor(u{1}(1)+0.5);
+                y = floor(u{1}(2)+0.5);
+                d2c = sqrt((x-center{1}(1))^2 + (y - center{1}(2))^2);
+                if d2c > radius(1)
+                    fprintf('Outside of mask: %.04f', d2c);
+                    continue;
+                end
+                fprintf('Inside of mask: %.04f', d2c);
                 u{2} = center{2}' + normal * radius(2);
                 ind(2) = sub2ind(size(mask_ref{2}), floor(u{2}(2)+0.5), floor(u{2}(1)+0.5));
+                x = floor(u{2}(1)+0.5);
+                y = floor(u{2}(2)+0.5);
+                d2c = sqrt((x-center{2}(1))^2 + (y - center{2}(2))^2);
+                if d2c > radius(2)
+                    fprintf('Outside of mask: %.04f', d2c);
+                    continue;
+                end
+                fprintf('Inside of mask: %.04f', d2c);
                 % debug start
 %                 figure;
 %                 subplot(1, 2, 1);
