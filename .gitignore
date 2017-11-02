@@ -5,3 +5,5 @@
 *.txt
 *.ply
 data/buddha/Normal_gt.mat
+example-based-ps/to-be-delete/
+example-based-ps/src/to-be-delete/
