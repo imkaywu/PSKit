@@ -1,28 +1,38 @@
 ## Source code
 
-`main_ps`: main function
+- `main_svbrdf`: example-based PS for objects with spatially-varying BRDF
 
-`include`:
+- `main_ivbrdf`: example-based PS for objects with invariant BRDF
 
-	- `compute_heightMap`: compute the height map based on normal map and mask using linear least squares
+### `include/`:
+
+	- `decode`: decode from RGB image to normal map;
+
+	- `encode`: encode from normal map to RGB image;
 
 	- `esti_surf`: estimate height map from normal map
 
 	- `gen_normals`: generate uniformly distributed normals
 
-	- `integrate_horn2: estimate height map using Horn's method
-
 	- `read_normals`: read normals from a text file
 
 	- `show_surfNorm`: display the surface normal
 
-`io`:
+### `include/DfN`: multiple algorithm to integrate a surface from normal/gradient map
+
+	- `compute_heightMap`: compute the height map based on normal map and mask using linear least squares
+
+	- `integrate_horn2: estimate height map using Horn's method
+
+	- `DepthFromGradient`: estimate height map from gradient map, from Ying Xiong's DfGBox
+
+### `io/`:
 
 	- `write_ply`: write vertex and color information into a PLY file
 
-`src`:
+### `src/`:
 
-	- `exap_based_ps_varying_brdf`: implementation of example-based photometric stereo of objects with SVBRDF
+	- `exap_based_ps_vsbrdf`: implementation of example-based photometric stereo of objects with SVBRDF
 
 	- `normal_esti_coarse2fine_ps`: coarse to fine estimation of surface normal
 
