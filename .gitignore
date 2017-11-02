@@ -4,3 +4,4 @@
 *.png
 *.txt
 *.ply
+data/buddha/Normal_gt.mat
