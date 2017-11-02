@@ -55,7 +55,7 @@ end
 data.nimgs = numel(data.name_img_tar);
 data.nrobjs = 2;
 data.update_file = false;
-data.normalize_intensity = true;
+data.normalize_intensity = false;
 data.range_radius = [150, 180]; % the range of radius is a user-defined parameter [150, 180] for cat
 
 % normal estimation
