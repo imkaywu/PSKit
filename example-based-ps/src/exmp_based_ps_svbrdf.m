@@ -39,39 +39,37 @@ else
 end
 
 % read target and reference images
-img_tar = zeros(size(mask_tar, 1), size(mask_tar, 2), 3 * data.nimgs, 'uint8');
-img_ref{1} = zeros(size(mask_ref{1}, 1), size(mask_ref{1}, 2), 3 * data.nimgs, 'uint8');
-img_ref{2} = zeros(size(mask_ref{2}, 1), size(mask_ref{2}, 2), 3 * data.nimgs, 'uint8');
+img_tar = zeros(size(mask_tar, 1), size(mask_tar, 2), 3 * data.nimgs);
+img_ref{1} = zeros(size(mask_ref{1}, 1), size(mask_ref{1}, 2), 3 * data.nimgs);
+img_ref{2} = zeros(size(mask_ref{2}, 1), size(mask_ref{2}, 2), 3 * data.nimgs);
 
-normalize_percentile = 99;
 ind_img = randperm(data.nimgs); % reshuffle the image
-for i = 1 : data.nimgs 
+for i = 1 : data.nimgs
     % target object
-    Itmp = im2double(imread(data.name_img_tar{ind_img(i)}));
-%     for c = 1 : 3
-%         Ic = Itmp(:, :, c);
-%         Ic = Ic / prctile(Ic(:), normalize_percentile);
-%         Itmp(:, :, c) = Ic;
-%     end
-    img_tar(:, :, 3 * (i - 1) + 1 : 3 * i) = Itmp;
+    img_tar(:, :, 3 * (i - 1) + 1 : 3 * i) = im2double(imread(data.name_img_tar{ind_img(i)}));
     
     % specular object
-    Itmp = im2double(imread(data.name_img_ref{ind_img(i), 1}));
-%     for c = 1 : 3
-%         Ic = Itmp(:, :, c);
-%         Ic = Ic / prctile(Ic(:), normalize_percentile);
-%         Itmp(:, :, c) = Ic;
-%     end
-    img_ref{1}(:, :, 3 * (i - 1) + 1 : 3 * i) = Itmp;
+    img_ref{1}(:, :, 3 * (i - 1) + 1 : 3 * i) = im2double(imread(data.name_img_ref{ind_img(i), 1}));
     
     % diffuse object
-    Itmp = im2double(imread(data.name_img_ref{ind_img(i), 2}));
-%     for c = 1 : 3
-%         Ic = Itmp(:, :, c);
-%         Ic = Ic / prctile(Ic(:), normalize_percentile);
-%         Itmp(:, :, c) = Ic;
-%     end
-    img_ref{2}(:, :, 3 * (i - 1) + 1 : 3 * i) = Itmp;
+    img_ref{2}(:, :, 3 * (i - 1) + 1 : 3 * i) = im2double(imread(data.name_img_ref{ind_img(i), 2}));
+end
+
+normalize_percentile = 99;
+if data.normalize_intensity
+    for i = 1 : size(img_tar, 3)
+        img_tmp = img_tar(:, :, i);
+        img_tmp = img_tmp / prctile(img_tmp(:), normalize_percentile);
+        img_tar(:, :, i) = img_tmp;
+
+        img_tmp = img_ref{1}(:, :, i);
+        img_tmp = img_tmp / prctile(img_tmp(:), normalize_percentile);
+        img_ref{1}(:, :, i) = img_tmp;
+
+        img_tmp = img_ref{2}(:, :, i);
+        img_tmp = img_tmp / prctile(img_tmp(:), normalize_percentile);
+        img_ref{2}(:, :, i) = img_tmp;
+    end
 end
 
 % rearrange the image data so that the data is grouped by channel
@@ -84,7 +82,7 @@ img_ref{1} = img_ref{1}(:, :, ind);
 img_ref{2} = img_ref{2}(:, :, ind);
 clear r_ind g_ind b_ind ind
 
-% reshape the data to a (3 * num_img X num_pixel) matrix
+% reshape the data to a ((3 * num_img) x num_pixel) matrix
 OV_tar = reshape(img_tar, [], size(img_tar, 3))';
 OV_ref{1} = reshape(img_ref{1}, [], size(img_ref{1}, 3))';
 OV_ref{2} = reshape(img_ref{2}, [], size(img_ref{2}, 3))';
@@ -96,10 +94,6 @@ OV_ref_ind{1} = find(mask_ref{1}(:) > 0);
 OV_ref{1} = OV_ref{1}(:, OV_ref_ind{1});
 OV_ref_ind{2} = find(mask_ref{2}(:) > 0);
 OV_ref{2} = OV_ref{2}(:, OV_ref_ind{2});
-
-OV_tar = double(OV_tar);
-OV_ref{1} = double(OV_ref{1});
-OV_ref{2} = double(OV_ref{2});
 
 % normalized each channel separately, doesn't work as well
 % for i = 1 : 3
@@ -122,7 +116,7 @@ clear mask_tar mask_ref img_tar img_ref
 use_mex = 1;
 if use_mex
     centers = [center{1}', center{2}'];
-    radius = radius - 0.6;
+    radius = radius - 0.3;
     normals = normal_esti_coarse2fine_ps(OV_tar', OV_ref{1}', OV_ref{2}', uint32(OV_tar_ind), uint32(OV_ref_ind{1}), uint32(OV_ref_ind{2}), uint32(size_tar), uint32(size_ref), centers, radius');
 else
 write2file = false;

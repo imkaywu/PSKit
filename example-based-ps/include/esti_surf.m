@@ -1,7 +1,7 @@
 % rearrange the normal map and estimate the height map
 close all;
 addpath('io/');
-addpath('include/DfGBox/');
+addpath(genpath('include/'));
 
 mask_tar = imread(data.name_mask_tar);
 mask_tar(mask_tar > 0) = 1;
@@ -30,12 +30,12 @@ if DfG
 % height_map = compute_heightMap(norm_map, mask_tar);
 
 % solution 2: horn's method, slow
-% n_z = norm_map(:, :, 3);
-% mask_tar(mask_tar > 0) = 1;
-% n_z(n_z < 0.01) = 1;
-% n_x = norm_map(:, :, 1) ./ n_z;
-% n_y = norm_map(:, :, 2) ./ n_z;
-% height_map = integrate_horn2(n_x, n_y, double(mask_tar), 100000, 1);
+n_z = norm_map(:, :, 3);
+mask_tar(mask_tar > 0) = 1;
+n_z(n_z < 0.01) = 1;
+n_x = norm_map(:, :, 1) ./ n_z;
+n_y = norm_map(:, :, 2) ./ n_z;
+height_map = integrate_horn2(n_x, n_y, double(mask_tar), 100000, 1);
 
 % solution 3:
 p = -norm_map(:,:,1) ./ norm_map(:,:,3);
@@ -43,6 +43,7 @@ q = -norm_map(:,:,2) ./ norm_map(:,:,3);
 p(isnan(p)) = 0;
 q(isnan(q)) = 0;
 height_map = DepthFromGradient(p, q);
+
 % Visualize depth map.
 figure;
 height_map(isnan(norm_map(:,:,1)) | isnan(norm_map(:,:,2)) | isnan(norm_map(:,:,3))) = NaN;
@@ -55,4 +56,4 @@ write_ply(sprintf('%s/%s_ps.ply', data.idir, data.obj_name), height_map, norm_ma
 end
 
 rmpath('io/');
-rmpath('include/DfGBox/');
+addpath(genpath('include/'));

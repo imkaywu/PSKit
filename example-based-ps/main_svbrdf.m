@@ -1,4 +1,4 @@
-close all; clc;
+clear data; close all; clc;
 
 %% include directory
 addpath('src/');
@@ -54,7 +54,8 @@ end
 %% Run algorithm on dataset
 data.nimgs = numel(data.name_img_tar);
 data.nrobjs = 2;
-data.update_file = 0;
+data.update_file = false;
+data.normalize_intensity = true;
 data.range_radius = [150, 180]; % the range of radius is a user-defined parameter [150, 180] for cat
 
 % normal estimation
