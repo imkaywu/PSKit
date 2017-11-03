@@ -64,7 +64,7 @@ exmp_based_ps_svbrdf;
 
 % surface integration
 img = imread(data.name_img_tar{1, 1});
-mask = imread(data.name_ref_tar);
+mask = imread(data.name_mask_tar);
 esti_surf(img, mask, normals, data.idir);
 
 unset_path;

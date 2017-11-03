@@ -18,7 +18,7 @@ datadir = fullfile(rdir, 'data', data_name);
 bitdepth = 16;
 gamma = 1;
 resize = 1;
-data = load_datadir_re(datadir, bitdepth, resize, gamma); 
+data = load_datadir_re(datadir, bitdepth, resize, gamma);
 
 L = data.s;
 f = size(L, 1);

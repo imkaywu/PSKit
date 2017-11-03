@@ -1,4 +1,4 @@
-function normal = nmap2normal(mask, nmap);
+function normal = nmap2normal(mask, nmap)
 mask_ind = find(mask > 0);
 mask_reso = numel(mask);
 normal = zeros(numel(mask_ind), 3);
