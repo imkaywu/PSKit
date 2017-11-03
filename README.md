@@ -53,13 +53,13 @@ For the structure of datasets of example-based photometric stereo, please visit 
 run `main_svbrdf` and `main_lls_ps`.
 
 ## Results
-![height map buddha](doc/hmap_buddha.png)
-![arrow map buddha](doc/arrowmap_buddha.png)
-![nmap buddha](doc/normal_buddha.png)
-![height map cat](doc/hmap_cat.png)
-![arrow map cat](doc/arrowmap_cat.png)
-![nmap cat](doc/normal_cat.png)
-
+![result](doc/result.pdf)\\
+<!-- ![arrow map buddha](doc/arrowmap_buddha.png)\\
+![nmap buddha](doc/normal_buddha.png)\\
+![height map cat](doc/hmap_cat.png)\\
+![arrow map cat](doc/arrowmap_cat.png)\\
+![nmap cat](doc/normal_cat.png)\\
+ -->
 
 ## License
 MIT
