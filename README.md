@@ -53,7 +53,11 @@ For the structure of datasets of example-based photometric stereo, please visit 
 run `main_svbrdf` and `main_lls_ps`.
 
 ## Results
-![result](doc/result.pdf)\\
+<object data="doc/result.pdf" type="application/pdf" width="700px" height="500px">
+    <embed src="doc/result.pdf">
+        This browser does not support PDFs. Please download the PDF to view it: <a href="doc/result.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
 <!-- ![arrow map buddha](doc/arrowmap_buddha.png)\\
 ![nmap buddha](doc/normal_buddha.png)\\
 ![height map cat](doc/hmap_cat.png)\\
