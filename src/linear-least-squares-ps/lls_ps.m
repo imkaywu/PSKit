@@ -1,4 +1,4 @@
-function N = L2_PMS(data, m)
+function N = lls_ps(data, m)
 
 light_dir = (data.s)';
 f = size(light_dir, 2);

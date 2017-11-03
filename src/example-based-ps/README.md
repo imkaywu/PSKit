@@ -18,7 +18,7 @@
 
 - `show_surfNorm`: display the surface normal
 
-### `include/DfN`: multiple algorithm to integrate a surface from normal/gradient map
+### `DfN`: multiple algorithm to integrate a surface from normal/gradient map
 
 - `compute_heightMap`: compute the height map based on normal map and mask using linear least squares
 

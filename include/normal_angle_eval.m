@@ -1,4 +1,4 @@
-function [meanA, medianA, stdA, maxA, angleImg, angle] =  normalAngleEval(N_true, N_est, maskindex)
+function [meanA, medianA, stdA, maxA, angleImg, angle] =  normal_angle_eval(N_true, N_est, maskindex)
 
 %Evaluate how well a reconstructed 3D surface is
 %N_true and N_est should be (height X width X 3) vectors (unit vector)

@@ -1,8 +1,7 @@
 clear data; close all; clc;
 
 %% include directory
-addpath('src/');
-addpath('include/');
+set_path;
 
 %% Read dataset
 % set up various directories
@@ -64,7 +63,8 @@ exmp_based_ps_svbrdf;
 % n_map_tar{data.num_view} = n_map_tar;
 
 % surface integration
-esti_surf;
+img = imread(data.name_img_tar{1, 1});
+mask = imread(data.name_ref_tar);
+esti_surf(img, mask, normals, data.idir);
 
-rmpath('src/');
-rmpath('include/');
+unset_path;
